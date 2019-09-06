@@ -1,3 +1,5 @@
+import Debug.Trace
+
 union :: [a] -> [a] -> [a]
 union xs ys = xs ++ ys
 
@@ -33,3 +35,42 @@ mySum (x:xs) =
   let sumOfXs = mySum xs
   in x + sumOfXs
                
+prodEvens [] = 1
+prodEvens (x:xs) =
+      let pexs = prodEvens xs
+      in if even x then x * pexs else pexs
+
+prodEvens2 [] = 1
+prodEvens2 (x:xs) = 
+      if even x 
+      then x * prodEvens2 xs 
+      else prodEvens2 xs
+
+prodEvens3 [] = 1
+prodEvens3 (x:xs) 
+    | even x    = x * prodEvens3 xs 
+    | otherwise = prodEvens3 xs
+
+{-prodEvens4 [] = 1
+prodEvens4 ((2*x):xs) = 2 * prodEvens4 xs
+prodEvens4 (x:xs) = prodEvens4 xs-}
+
+myMaximum [] = error "MyMaximum got an empty list"
+myMaximum [x] = x
+myMaximum (x:xs) = 
+  let maxXs = myMaximum xs
+  in if x > maxXs then x else maxXs
+
+myMaximum2 [] = error "MyMaximum got an empty list"
+myMaximum2 [x] = traceShow [x] x
+myMaximum2 (x:xs) = traceShow (x,xs) (
+  if x > myMaximum2 xs 
+  then x 
+  else myMaximum2 xs )
+
+myMaximum [] = error "MyMaximum got an empty list"
+myMaximum [x] = x
+myMaximum (x:xs) 
+        | x > maxXs = x
+        | otherwise = maxXs
+  where maxXs = myMaximum xs 
