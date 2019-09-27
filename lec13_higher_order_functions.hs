@@ -24,3 +24,49 @@ doToAll f (x:xs) = (f x):(doToAll f xs)
 
 dAdd :: Int -> Int -> Int
 dAdd x y = x+2*y
+
+positives :: [Int] -> [Int]
+positives [] = []
+positives (x:xs) =
+    if x > 0
+    then x:(positives xs)
+    else positives xs
+
+upperCase :: String -> String
+upperCase "" = ""
+upperCase (c:cs) =
+    if c `elem` ['A'..'Z']
+    then c:(upperCase cs)
+    else upperCase cs
+
+--onlyThe :: [Int] -> [Int]
+onlyThe p [] = []
+onlyThe p (x:xs) =
+    if p x 
+    then x:(onlyThe p xs)
+    else onlyThe p xs
+
+evens [] = []
+evens (x:xs) =
+    if x `mod` 2 == 0
+    then x:(evens xs)
+    else evens xs
+
+singletons lst = map aux lst
+    where aux x = [x]
+
+evens2 lst = onlyThe aux lst
+    where aux x = x `mod` 2 == 0
+
+singletons2 lst = map (\x -> [x]) lst
+evens3 lst = onlyThe (\x -> (x `mod`2) ==0) lst
+
+
+multPairs :: [Int] -> [Int] -> [Int]
+multPairs (x:xs) (y:ys) = (x*y):(multPairs xs ys)
+multPairs [] [] = []
+
+concatPairs :: [String] -> [String] -> [String]
+concatPairs (x:xs) (y:ys) = (x++y):(concatPairs xs ys)
+concatPairs [] [] = []
+
