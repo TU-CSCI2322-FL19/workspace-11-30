@@ -1,3 +1,4 @@
+import Debug.Trace
 add4 x = x + 4
 add8 x = x + 8
 
@@ -69,4 +70,24 @@ multPairs [] [] = []
 concatPairs :: [String] -> [String] -> [String]
 concatPairs (x:xs) (y:ys) = (x++y):(concatPairs xs ys)
 concatPairs [] [] = []
+
+funcPairs f [] [] = []
+funcPairs f xs [] = []
+funcPairs f [] ys = []
+funcPairs f (x:xs) (y:ys) = (f x y):(funcPairs f xs ys)
+
+katamari :: (a -> b -> b) -> b -> [a] -> b
+katamari f b [] = b
+katamari f b (s:ss) = f s (katamari f b ss)
+
+multPositives :: [Int] -> Int 
+--with a list comprehension and built-in functions
+--with recursion
+--with a filter and fold
+--just with a fold
+
+myElem :: Eq a => a -> [a] -> Bool
+--with a filter and built-in functions
+--with recursion
+--with a fold
 
