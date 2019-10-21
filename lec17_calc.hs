@@ -39,7 +39,11 @@ goalAST = Node Plus (Leaf 7) (Node Div (Leaf 232) (Node Mult (Leaf 3) (Leaf 4)))
 
 --Step 2
 dangerParse :: [Token] -> AST
-dangerParse = undefined
+dangerParse (NumT x:ts) = Leaf x
+dangerParse (OperT o:ts) = 
+      let lft = dangerParse ts
+          rgt = dangerParse (tail ts)
+      in Node o lft rgt
 
 --test on input and input2
 
