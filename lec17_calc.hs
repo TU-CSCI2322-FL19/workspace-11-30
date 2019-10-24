@@ -1,4 +1,5 @@
 import Data.Char
+import Debug.Trace
 
 -- data Token = PlusT | MinusT | MultT | DivT | NumT Integer deriving (Eq, Show)
 
@@ -39,11 +40,19 @@ goalAST = Node Plus (Leaf 7) (Node Div (Leaf 232) (Node Mult (Leaf 3) (Leaf 4)))
 
 --Step 2
 dangerParse :: [Token] -> AST
-dangerParse (NumT x:ts) = Leaf x
-dangerParse (OperT o:ts) = 
-      let lft = dangerParse ts
-          rgt = dangerParse (tail ts)
-      in Node o lft rgt
+dangerParse tokens = 
+  let (tree, afterTree) = aux tokens
+  in if null afterTree
+     then tree
+     else error "Invalid Parse: Too Many Tokens"
+
+aux :: [Token] -> (AST, [Token])
+aux [] = error "Invalid Parse: Too Few Tokens"
+aux (NumT x:ts) = (Leaf x, ts)
+aux (OperT o:ts) = 
+      let (lftTree, afterLft) =  aux ts
+          (rgtTree, afterRgt) =  aux afterLft
+      in (Node o lftTree rgtTree, afterRgt)
 
 --test on input and input2
 
