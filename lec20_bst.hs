@@ -1,4 +1,5 @@
 import Data.List
+import Spoooky
 {- aCdata BST = Empty | Node Integer BST BST deriving Show
 data BSTC = Empty | Node Char BSTC BSTC deriving Show-}
 data BST a = Empty | Node a (BST a) (BST a) deriving Show
