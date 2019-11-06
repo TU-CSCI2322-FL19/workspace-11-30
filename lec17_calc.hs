@@ -39,22 +39,38 @@ inputWords = words input
 goalAST = Node Plus (Leaf 7) (Node Div (Leaf 232) (Node Mult (Leaf 3) (Leaf 4)))
 
 --Step 2
+
 dangerParse :: [Token] -> AST
 dangerParse tokens = 
   let (tree, afterTree) = aux tokens
   in if null afterTree
      then tree
      else error "Invalid Parse: Too Many Tokens"
-
-aux :: [Token] -> (AST, [Token])
-aux [] = error "Invalid Parse: Too Few Tokens"
-aux (NumT x:ts) = (Leaf x, ts)
-aux (OperT o:ts) = 
-      let (lftTree, afterLft) =  aux ts
-          (rgtTree, afterRgt) =  aux afterLft
-      in (Node o lftTree rgtTree, afterRgt)
+  where
+    aux :: [Token] -> (AST, [Token])
+    aux [] = error "Invalid Parse: Too Few Tokens"
+    aux (NumT x:ts) = (Leaf x, ts)
+    aux (OperT o:ts) = 
+          let (lftTree, afterLft) =  aux ts
+              (rgtTree, afterRgt) =  aux afterLft
+          in (Node o lftTree rgtTree, afterRgt)
 
 --test on input and input2
+
+coolParse :: [Token] -> Maybe AST
+coolParse tokens = 
+  do (tree, afterTree) <- aux tokens
+     if null afterTree
+       then Just tree
+       else Nothing
+
+aux :: [Token] -> Maybe (AST, [Token])
+aux [] = Nothing
+aux (NumT x:ts) = Just (Leaf x, ts)
+aux (OperT o:ts) = 
+      do (lftTree, afterLft) <- aux ts
+         (rgtTree, afterRgt) <- aux afterLft
+         return (Node o lftTree rgtTree, afterRgt)
 
 
 --Step 1
@@ -84,3 +100,18 @@ countOps :: AST -> Integer
 countOps (Leaf x) = 0
 countOps (Node op lft rgt) = 1 + countOps lft + countOps rgt
 
+
+dangerEvalString :: String -> Integer
+dangerEvalString str = 
+  let pieces = words str
+      tokens = fromJust $ map lexer pieces
+      ast = fromJust $ coolParse tokens
+  in eval ast
+
+
+evalString :: String -> Maybe Integer
+evalString str = 
+  do let pieces = words str
+     tokens <- map lexer pieces
+     ast <- coolParse tokens
+     return (eval ast)
