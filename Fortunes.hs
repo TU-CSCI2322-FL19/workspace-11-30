@@ -28,15 +28,22 @@ main :: IO ()
 main = do
     allFortunes <- readFile "fortunes.txt"
     let fortunes = lines allFortunes
-    putStr "Please enter your name: "
-    name <- getLine
+    giveFortune fortunes
+
+giveFortune :: [String] -> IO ()
+giveFortune fortunes = do
+    name <- prompt "Please enter your name: "
     putStrLn $ "Hello " ++ name ++ ", here is your fortune."
     putStrLn $ "\t" ++ (getFortune name fortunes)
-    putStr "Would you like another fortune? "
-    response <- getLine
+    response <- prompt "Would you like another fortune? "
     if map toLower response `elem` ["y","yes","sure","please","ok"]
     then main
     else return ()
+
+prompt :: String -> IO String
+prompt message = 
+  do putStr message
+     getLine
 
 getFortune :: String -> [String] -> String
 getFortune name list = 
